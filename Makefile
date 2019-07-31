@@ -56,83 +56,24 @@ else
 	DEBUG_FLAG = -debug
 endif
 
-all: clean build test
+all: clean build
 
 .PHONY: build
-build: server
+build:
 	$(GOBUILD) -ldflags "$(PackageFlags)" -o ./$(BUILD_TARGET_SERVER) -v ./$(BUILD_SRC)
-
-.PHONY: fmt
-fmt:
-	$(GOCMD) fmt ./...
-
-.PHONY: lint
-lint:
-	go list ./... | xargs $(GOLINT)
-
-.PHONY: lint-rich
-lint-rich:
-	$(ECHO_V)rm -rf $(LINT_LOG)
-	@echo "Running golangcli lint..."
-	$(ECHO_V)golangci-lint run $(VERBOSITY_FLAG)--enable-all -D gochecknoglobals -D prealloc -D lll -D interfacer -D scopelint -D maligned -D dupl| tee -a $(LINT_LOG)
-
-.PHONY: test
-test: fmt
-	$(GOTEST) -short -race ./...
-
-.PHONY: test-rich
-test-rich:
-	@echo "Running test cases..."
-	$(ECHO_V)rm -f $(COV_REPORT)
-	$(ECHO_V)touch $(COV_OUT)
-	$(ECHO_V)RICHGO_FORCE_COLOR=1 overalls \
-		-project=$(ROOT_PKG) \
-		-go-binary=richgo \
-		-ignore $(TEST_IGNORE) \
-		$(DEBUG_FLAG) -- \
-		$(VERBOSITY_FLAG) -short | \
-		grep -v -e "Test args" -e "Processing"
-
-.PHONY: test-html
-test-html: test-rich
-	@echo "Generating test report html..."
-	$(ECHO_V)gocov convert $(COV_REPORT) | gocov-html > $(COV_HTML)
-	$(ECHO_V)open $(COV_HTML)
-
-.PHONY: mockgen
-mockgen:
-	@./misc/scripts/mockgen.sh
-
-.PHONY: stringer
-stringer:
-	sh ./misc/scripts/stringer.sh
 
 .PHONY: license
 license:
 	@./misc/scripts/licenseheader.sh
 
-.PHONY: dev-deps
-dev-deps:
-	@echo "Installing dev dependencies..."
-	$(ECHO_V)go get -u github.com/golangci/golangci-lint/cmd/golangci-lint
-	$(ECHO_V)go get -u github.com/kyoh86/richgo
-	$(ECHO_V)go get -u github.com/axw/gocov/gocov
-	$(ECHO_V)go get -u gopkg.in/matm/v1/gocov-html
-	$(ECHO_V)go get -u github.com/go-playground/overalls
 
 .PHONY: clean
 clean:
 	@echo "Cleaning..."
 	$(ECHO_V)rm -rf ./bin/$(BUILD_TARGET_SERVER)
-	$(ECHO_V)rm -rf ./bin/$(BUILD_TARGET_ADDRGEN)
-	$(ECHO_V)rm -rf ./bin/$(BUILD_TARGET_IOTC)
-	$(ECHO_V)rm -rf $(COV_REPORT) $(COV_HTML) $(LINT_LOG)
-	$(ECHO_V)find . -name $(COV_OUT) -delete
-	$(ECHO_V)find . -name $(TESTBED_COV_OUT) -delete
-	$(ECHO_V)$(GOCLEAN) -i $(PKGS)
 
 .PHONY: run
 run:
-	$(GOBUILD) -ldflags "$(PackageFlags)" -o ./bin/$(BUILD_TARGET_SERVER) -v ./$(BUILD_TARGET_SERVER)
+	$(GOBUILD) -ldflags "$(PackageFlags)" -o ./bin/$(BUILD_TARGET_SERVER) -v ./$(BUILD_SRC)
 	./bin/$(BUILD_TARGET_SERVER)
 
