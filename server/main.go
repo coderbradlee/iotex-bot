@@ -12,6 +12,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	glog "log"
@@ -22,6 +23,7 @@ import (
 
 	"github.com/lzxm160/iotex-bot/config"
 	"github.com/lzxm160/iotex-bot/pkg/log"
+	"github.com/lzxm160/iotex-bot/server/bot"
 )
 
 func init() {
@@ -41,12 +43,13 @@ func main() {
 	}
 	initLogger(cfg)
 
-	// liveness start
-	//probeSvr := bot.New(cfg.System.HTTPStatsPort)
-	//if err := probeSvr.Start(ctx); err != nil {
-	//	log.L().Fatal("Failed to start probe server.", zap.Error(err))
-	//}
-	log.L().Info("okkkkk")
+	b, err := bot.NewServer(cfg)
+	if err != nil {
+		log.L().Fatal("new server:", zap.Error(err))
+	}
+	if err := b.Start(context.Background()); err != nil {
+		log.L().Fatal("Failed to start server.", zap.Error(err))
+	}
 }
 
 func initLogger(cfg config.Config) {
