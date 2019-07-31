@@ -15,19 +15,11 @@ GOCLEAN=$(GOCMD) clean
 GOTEST=$(GOCMD) test
 GOGET=$(GOCMD) get
 BUILD_TARGET_SERVER=server
-BUILD_TARGET_ACTINJV2=actioninjectorv2
-BUILD_TARGET_ADDRGEN=addrgen
-BUILD_TARGET_IOCTL=ioctl
-BUILD_TARGET_MINICLUSTER=minicluster
-BUILD_TARGET_RECOVER=recover
 
 # Pkgs
 ALL_PKGS := $(shell go list ./... )
 PKGS := $(shell go list ./... | grep -v /test/ )
-ROOT_PKG := "github.com/iotexproject/iotex-core"
-
-# Docker parameters
-DOCKERCMD=docker
+ROOT_PKG := "github.com/iotexproject/iotex-bot"
 
 # Package Info
 PACKAGE_VERSION := $(shell git describe --tags)
@@ -66,12 +58,8 @@ endif
 all: clean build test
 
 .PHONY: build
-build: ioctl
+build: bot
 	$(GOBUILD) -ldflags "$(PackageFlags)" -o ./bin/$(BUILD_TARGET_SERVER) -v ./$(BUILD_TARGET_SERVER)
-	$(GOBUILD) -o ./bin/$(BUILD_TARGET_ACTINJV2) -v ./tools/actioninjector.v2
-	$(GOBUILD) -o ./bin/$(BUILD_TARGET_ADDRGEN) -v ./tools/addrgen
-	$(GOBUILD) -o ./bin/$(BUILD_TARGET_MINICLUSTER) -v ./tools/minicluster
-	$(GOBUILD) -o ./bin/$(BUILD_TARGET_RECOVER) -v ./tools/staterecoverer
 
 .PHONY: fmt
 fmt:
@@ -137,52 +125,13 @@ clean:
 	$(ECHO_V)rm -rf ./bin/$(BUILD_TARGET_SERVER)
 	$(ECHO_V)rm -rf ./bin/$(BUILD_TARGET_ADDRGEN)
 	$(ECHO_V)rm -rf ./bin/$(BUILD_TARGET_IOTC)
-	$(ECHO_V)rm -rf ./e2etest/*chain*.db
-	$(ECHO_V)rm -rf *chain*.db
-	$(ECHO_V)rm -rf *trie*.db
 	$(ECHO_V)rm -rf $(COV_REPORT) $(COV_HTML) $(LINT_LOG)
 	$(ECHO_V)find . -name $(COV_OUT) -delete
 	$(ECHO_V)find . -name $(TESTBED_COV_OUT) -delete
 	$(ECHO_V)$(GOCLEAN) -i $(PKGS)
 
-.PHONY: reboot
-reboot:
-	$(ECHO_V)rm -rf *chain*.db
-	$(ECHO_V)rm -rf *trie*.db
-	$(ECHO_V)rm -rf ./e2etest/*chain*.db
-	$(GOBUILD) -ldflags "$(PackageFlags)" -o ./bin/$(BUILD_TARGET_SERVER) -v ./$(BUILD_TARGET_SERVER)
-	./bin/$(BUILD_TARGET_SERVER) -plugin=gateway
-
 .PHONY: run
 run:
-	$(ECHO_V)rm -rf ./e2etest/*chain*.db
 	$(GOBUILD) -ldflags "$(PackageFlags)" -o ./bin/$(BUILD_TARGET_SERVER) -v ./$(BUILD_TARGET_SERVER)
-	./bin/$(BUILD_TARGET_SERVER) -plugin=gateway
+	./bin/$(BUILD_TARGET_SERVER)
 
-.PHONY: docker
-docker:
-	$(DOCKERCMD) build -t $(USER)/iotex-core:latest .
-
-.PHONY: minicluster
-minicluster:
-	$(ECHO_V)rm -rf *chain*.db
-	$(ECHO_V)rm -rf *trie*.db
-	$(GOBUILD) -ldflags "$(PackageFlags)" -o ./bin/$(BUILD_TARGET_MINICLUSTER) -v ./tools/minicluster
-	./bin/$(BUILD_TARGET_MINICLUSTER)
-
-.PHONY: nightlybuild
-nightlybuild:
-	$(ECHO_V)rm -rf *chain*.db
-	$(ECHO_V)rm -rf *trie*.db
-	$(GOBUILD) -ldflags "$(PackageFlags)" -o ./bin/$(BUILD_TARGET_MINICLUSTER) -v ./tools/minicluster
-	./bin/$(BUILD_TARGET_MINICLUSTER) -timeout=14400 -fp-token=true
-
-.PHONY: recover
-recover:
-	$(ECHO_V)rm -rf ./e2etest/*chain*.db
-	$(GOBUILD) -o ./bin/$(BUILD_TARGET_RECOVER) -v ./tools/staterecoverer
-	./bin/$(BUILD_TARGET_RECOVER) -plugin=gateway
-
-.PHONY: ioctl
-ioctl:
-	$(GOBUILD) -ldflags "$(PackageFlags)" -o ./bin/$(BUILD_TARGET_IOCTL) -v ./ioctl
