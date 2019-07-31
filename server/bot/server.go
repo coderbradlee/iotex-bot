@@ -67,7 +67,7 @@ func (s *Server) startTicker() error {
 		defer t.Stop()
 		for {
 			<-t.C
-			log.S().Info("start run :")
+			log.L().Info("start run :")
 			s.runRegisterOnce()
 		}
 	}()

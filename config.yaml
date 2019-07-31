@@ -10,6 +10,6 @@ log:
     outputPaths: ["stderr", "stdout"]
     errorOutputPaths: ["stderr"]
   stderrRedirectFile: s.log
-  stdLogRedirect: false
+  stdLogRedirect: true
 
 runInterval: 10

@@ -86,5 +86,12 @@ func InitLoggers(globalCfg GlobalConfig) error {
 			return err
 		}
 	}
+	logger, err := cfg.Zap.Build()
+	if err != nil {
+		return err
+	}
+	if cfg.RedirectStdLog {
+		zap.RedirectStdLog(logger)
+	}
 	return nil
 }
