@@ -88,10 +88,3 @@ func InitLoggers(globalCfg GlobalConfig) error {
 	}
 	return nil
 }
-
-// RegisterLevelConfigMux registers log's level config http mux.
-func RegisterLevelConfigMux(root *http.ServeMux) {
-	_logMu.Lock()
-	root.Handle("/logging/", http.StripPrefix("/logging", _logServeMux))
-	_logMu.Unlock()
-}
