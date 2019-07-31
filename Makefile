@@ -74,6 +74,6 @@ clean:
 
 .PHONY: run
 run:
-	$(GOBUILD) -ldflags "$(PackageFlags)" -o ./bin/$(BUILD_TARGET_SERVER) -v ./$(BUILD_SRC)
-	./bin/$(BUILD_TARGET_SERVER)
+	$(GOBUILD) -ldflags "$(PackageFlags)" -o ./$(BUILD_TARGET_SERVER) -v ./$(BUILD_SRC)
+	./$(BUILD_TARGET_SERVER)
 
