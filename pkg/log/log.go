@@ -93,5 +93,6 @@ func InitLoggers(globalCfg GlobalConfig) error {
 	if cfg.RedirectStdLog {
 		zap.RedirectStdLog(logger)
 	}
+	zap.ReplaceGlobals(logger)
 	return nil
 }
