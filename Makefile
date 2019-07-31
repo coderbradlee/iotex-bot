@@ -20,7 +20,7 @@ BUILD_SRC=server
 # Pkgs
 ALL_PKGS := $(shell go list ./... )
 PKGS := $(shell go list ./... | grep -v /test/ )
-ROOT_PKG := "github.com/iotexproject/iotex-bot"
+ROOT_PKG := "github.com/lzxm160/iotex-bot"
 
 # Package Info
 PACKAGE_VERSION := $(shell git describe --tags)
@@ -33,7 +33,7 @@ else
 endif
 GO_VERSION := $(shell go version)
 BUILD_TIME=$(shell date +%F-%Z/%T)
-VersionImportPath := github.com/iotexproject/iotex-core/pkg/version
+VersionImportPath := github.com/lzxm160/iotex-bot/pkg/version
 PackageFlags += -X '$(VersionImportPath).PackageVersion=$(PACKAGE_VERSION)'
 PackageFlags += -X '$(VersionImportPath).PackageCommitID=$(PACKAGE_COMMIT_ID)'
 PackageFlags += -X '$(VersionImportPath).GitStatus=$(GIT_STATUS)'
