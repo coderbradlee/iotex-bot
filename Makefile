@@ -58,7 +58,7 @@ endif
 all: clean build test
 
 .PHONY: build
-build: bot
+build: server
 	$(GOBUILD) -ldflags "$(PackageFlags)" -o ./bin/$(BUILD_TARGET_SERVER) -v ./$(BUILD_TARGET_SERVER)
 
 .PHONY: fmt

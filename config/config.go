@@ -60,9 +60,10 @@ type (
 	}
 	// Config is the root config struct, each package's config should be put as its sub struct
 	Config struct {
-		API      API              `yaml:"api"`
-		Log      log.GlobalConfig `yaml:"log"`
-		KeyStore string           `yaml:"keyStore"`
+		API         API              `yaml:"api"`
+		Log         log.GlobalConfig `yaml:"log"`
+		KeyStore    string           `yaml:"keyStore"`
+		RunInterval uint64           `yaml:"runInterval"`
 	}
 )
 

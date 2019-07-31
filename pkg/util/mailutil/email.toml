@@ -1,0 +1,14 @@
+#邮件发送
+#热部署
+to = [
+#	"huowutao@wident.cn"
+#	"yangjuan@wident.cn",
+#	"fuleili@wident.cn",
+#	"jinyilin@wident.cn",
+#	"zhouzhiwei@wident.cn",
+#	"zhaohuajian@wident.cn",
+#	"wangzhangxu@wident.cn",
+#	"yangjibin@wident.cn",
+#	"zhangxinyu@wident.cn",
+	"limingming@wident.cn",
+]

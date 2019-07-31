@@ -1,0 +1,9 @@
+package utils
+
+const (
+	smtpHost    = "smtp.mxhichina.com"
+	smtpPort    = 465
+	smtpAccount = "hm@wident.cn"
+	smtpPwd     = "Wident321"
+	smtpFrom    = "hm@wident.cn"
+)

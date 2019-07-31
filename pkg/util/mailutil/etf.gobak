@@ -1,0 +1,26 @@
+package utils
+
+import (
+	"math/big"
+	"time"
+)
+
+var (
+	Ether = BigPow(10, 18)
+)
+
+func MakeTimestamp() int64 {
+	return time.Now().UnixNano() / int64(time.Millisecond)
+}
+
+func FormatRatReward(reward *big.Rat) string {
+	wei := new(big.Rat).SetInt(Ether)
+	reward = reward.Quo(reward, wei)
+	return reward.FloatString(6)
+}
+
+func BigPow(a, b int) *big.Int {
+	c := new(big.Int)
+	c.Exp(big.NewInt(int64(a)), big.NewInt(int64(b)), big.NewInt(0))
+	return c
+}
