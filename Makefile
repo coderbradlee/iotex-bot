@@ -23,7 +23,7 @@ PKGS := $(shell go list ./... | grep -v /test/ )
 ROOT_PKG := "github.com/lzxm160/iotex-bot"
 
 # Package Info
-PACKAGE_VERSION := $(shell git describe --tags)
+PACKAGE_VERSION := $(shell git describe --always)
 PACKAGE_COMMIT_ID := $(shell git rev-parse HEAD)
 GIT_STATUS := $(shell git status --porcelain)
 ifdef GIT_STATUS
