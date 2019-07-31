@@ -14,7 +14,8 @@ GOINSTALL=$(GOCMD) install
 GOCLEAN=$(GOCMD) clean
 GOTEST=$(GOCMD) test
 GOGET=$(GOCMD) get
-BUILD_TARGET_SERVER=server
+BUILD_TARGET_SERVER=bot
+BUILD_SRC=server
 
 # Pkgs
 ALL_PKGS := $(shell go list ./... )
@@ -59,7 +60,7 @@ all: clean build test
 
 .PHONY: build
 build: server
-	$(GOBUILD) -ldflags "$(PackageFlags)" -o ./bin/$(BUILD_TARGET_SERVER) -v ./$(BUILD_TARGET_SERVER)
+	$(GOBUILD) -ldflags "$(PackageFlags)" -o ./$(BUILD_TARGET_SERVER) -v ./$(BUILD_SRC)
 
 .PHONY: fmt
 fmt:

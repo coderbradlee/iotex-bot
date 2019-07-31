@@ -11,4 +11,5 @@ log:
     errorOutputPaths: ["stderr"]
   stderrRedirectFile: /var/log/s.log
   stdLogRedirect: true
+
 runInterval: 10
