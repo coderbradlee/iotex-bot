@@ -24,6 +24,8 @@ type Service interface {
 type Server struct {
 	cfg         config.Config
 	runServices map[string]Service
+	ctx         context.Context
+	cancel      context.CancelFunc
 }
 
 // NewServer creates a new server
@@ -42,13 +44,13 @@ func newServer(cfg config.Config, testing bool) (*Server, error) {
 
 // Start starts the server
 func (s *Server) Start(ctx context.Context) error {
-	//cctx, cancel := context.WithCancel(context.Background())
+	s.ctx, s.cancel = context.WithCancel(ctx)
 	return s.startTicker()
 }
 
 // Stop stops the server
-func (s *Server) Stop(ctx context.Context) error {
-
+func (s *Server) Stop() error {
+	s.cancel()
 	return nil
 }
 
@@ -66,9 +68,15 @@ func (s *Server) startTicker() error {
 		t := time.NewTicker(d)
 		defer t.Stop()
 		for {
-			<-t.C
-			log.L().Info("start run :")
-			s.runRegisterOnce()
+			select {
+			case <-t.C:
+				log.L().Info("start run :")
+				s.runRegisterOnce()
+			case <-s.ctx.Done():
+				log.L().Info("exit :")
+				return
+			}
+
 		}
 	}()
 	return nil
