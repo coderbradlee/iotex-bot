@@ -1,0 +1,13 @@
+
+api:
+  url: api.testnet.iotex.one:80
+keyStore: ["io1vdtfpzkwpyngzvx7u2mauepnzja7kd5rryp0sg-6356908ace09268130dee2b7de643314bbeb3683","io1mflp9m6hcgm2qcghchsdqj3z3eccrnekx9p0ms-da7e12ef57c236a06117c5e0d04a228e7181cf36"]
+log:
+  zap:
+    level: info
+    encoding: json
+    disableStacktrace: true
+    outputPaths: ["stderr", "stdout"]
+    errorOutputPaths: ["stderr"]
+  stderrRedirectFile: /var/log/s.log
+  stdLogRedirect: true
