@@ -50,6 +50,7 @@ func main() {
 	if err := b.Start(context.Background()); err != nil {
 		log.L().Fatal("Failed to start server.", zap.Error(err))
 	}
+	select {}
 }
 
 func initLogger(cfg config.Config) {
