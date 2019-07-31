@@ -9,7 +9,7 @@ log:
     disableStacktrace: true
     outputPaths: ["stderr", "stdout"]
     errorOutputPaths: ["stderr"]
-  stderrRedirectFile: /var/log/s.log
+  stderrRedirectFile: s.log
   stdLogRedirect: true
 
 runInterval: 10
