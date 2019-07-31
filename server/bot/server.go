@@ -62,7 +62,7 @@ func (s *Server) Register(ss ...Service) error {
 
 func (s *Server) startTicker() error {
 	go func() {
-		d := time.Duration(s.cfg.RunInterval)
+		d := time.Duration(s.cfg.RunInterval) * time.Second
 		t := time.NewTicker(d)
 		defer t.Stop()
 		for {
