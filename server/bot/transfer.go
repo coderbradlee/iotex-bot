@@ -13,17 +13,15 @@ import (
 	"fmt"
 	"math/big"
 
-	"go.uber.org/zap"
-
 	"github.com/ethereum/go-ethereum/accounts/keystore"
 	"github.com/golang/protobuf/proto"
 	"github.com/iotexproject/go-pkgs/crypto"
 	"github.com/iotexproject/go-pkgs/hash"
 	"github.com/iotexproject/iotex-address/address"
 	"github.com/iotexproject/iotex-core/action"
-	"github.com/iotexproject/iotex-core/pkg/keypair"
 	"github.com/iotexproject/iotex-core/protogen/iotexapi"
 	"github.com/pkg/errors"
+	"go.uber.org/zap"
 
 	"github.com/lzxm160/iotex-bot/config"
 	"github.com/lzxm160/iotex-bot/pkg/log"
@@ -112,11 +110,7 @@ func (s *Transfer) transfer(pri crypto.PrivateKey) error {
 	elp := bd.SetGasLimit(s.cfg.Transfer.GasLimit).
 		SetGasPrice(gasprice).
 		SetAction(tx).Build()
-	p, err := keypair.HexStringToPrivateKey(pri.HexString())
-	if err != nil {
-		return err
-	}
-	selp, err := action.Sign(elp, p)
+	selp, err := action.Sign(elp, pri)
 	if err != nil {
 		return err
 	}
