@@ -18,11 +18,11 @@ import (
 	glog "log"
 	"os"
 
+	"github.com/iotexproject/iotex-core/pkg/log"
 	_ "go.uber.org/automaxprocs"
 	"go.uber.org/zap"
 
 	"github.com/lzxm160/iotex-bot/config"
-	"github.com/lzxm160/iotex-bot/pkg/log"
 	"github.com/lzxm160/iotex-bot/server/bot"
 )
 

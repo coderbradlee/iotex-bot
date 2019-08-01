@@ -13,7 +13,7 @@ import (
 	"strings"
 
 	"github.com/iotexproject/iotex-address/address"
-	"github.com/lzxm160/iotex-bot/pkg/log"
+	"github.com/iotexproject/iotex-core/pkg/log"
 
 	"github.com/pkg/errors"
 	uconfig "go.uber.org/config"
