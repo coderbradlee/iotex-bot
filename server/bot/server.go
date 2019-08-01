@@ -15,7 +15,7 @@ import (
 )
 
 type Service interface {
-	Start() error
+	Start(ctx context.Context) error
 	Stop() error
 	Name() string
 }
@@ -83,6 +83,6 @@ func (s *Server) startTicker() error {
 }
 func (s *Server) runRegisterOnce() {
 	for _, service := range s.runServices {
-		service.Start()
+		service.Start(s.ctx)
 	}
 }

@@ -64,6 +64,12 @@ type (
 		Log         log.GlobalConfig `yaml:"log"`
 		KeyStore    string           `yaml:"keyStore"`
 		RunInterval uint64           `yaml:"runInterval"`
+		Transfer    transfer         `yaml:"transfer"`
+		Wallet      string           `yaml:"wallet"`
+	}
+	transfer struct {
+		From []string `yaml:"from"`
+		To   []string `yaml:"to"`
 	}
 )
 

@@ -50,7 +50,7 @@ func main() {
 	if err := b.Start(context.Background()); err != nil {
 		log.L().Fatal("Failed to start server.", zap.Error(err))
 	}
-	b.Stop()
+	defer b.Stop()
 	select {}
 }
 
