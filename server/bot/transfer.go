@@ -89,14 +89,13 @@ func (s *Transfer) transfer(pri crypto.PrivateKey) error {
 	}
 	defer conn.Close()
 	cli := iotexapi.NewAPIServiceClient(conn)
-	ctx := context.Background()
 
 	from, err := address.FromBytes(pri.PublicKey().Hash())
 	if err != nil {
 		return err
 	}
 	request := iotexapi.GetAccountRequest{Address: from.String()}
-	response, err := cli.GetAccount(ctx, &request)
+	response, err := cli.GetAccount(context.Background(), &request)
 	if err != nil {
 		return err
 	}
@@ -124,7 +123,7 @@ func (s *Transfer) transfer(pri crypto.PrivateKey) error {
 		return err
 	}
 	req := &iotexapi.SendActionRequest{Action: selp.Proto()}
-	if _, err = cli.SendAction(ctx, req); err != nil {
+	if _, err = cli.SendAction(context.Background(), req); err != nil {
 		return err
 	}
 	shash := hash.Hash256b(byteutil.Must(proto.Marshal(selp.Proto())))
