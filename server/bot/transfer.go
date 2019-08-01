@@ -127,7 +127,7 @@ func (s *Transfer) transfer(pri crypto.PrivateKey) error {
 	}
 	shash := hash.Hash256b(byteutil.Must(proto.Marshal(selp.Proto())))
 	txhash := hex.EncodeToString(shash[:])
-	log.L().Info("transfer:", zap.String("transfer hash", txhash))
+	log.L().Info("transfer:", zap.String("transfer hash", txhash), zap.Uint64("nonce", nonce), zap.String("from", s.cfg.Transfer.From[0]), zap.String("to", s.cfg.Transfer.To[0]))
 	return nil
 }
 func (s *Transfer) getPrivateKey() (crypto.PrivateKey, error) {
