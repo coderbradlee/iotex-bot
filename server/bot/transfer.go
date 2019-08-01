@@ -90,19 +90,18 @@ func (s *Transfer) transfer(pri crypto.PrivateKey) error {
 	defer conn.Close()
 	cli := iotexapi.NewAPIServiceClient(conn)
 
-	from, err := address.FromBytes(pri.PublicKey().Hash())
-	if err != nil {
-		return err
-	}
-	request := iotexapi.GetAccountRequest{Address: from.String()}
-	response, err := cli.GetAccount(context.Background(), &request)
-	if err != nil {
-		return err
-	}
-	nonce := response.AccountMeta.PendingNonce
-	if err != nil {
-		return errors.New("failed to get nonce ")
-	}
+	//from, err := address.FromBytes(pri.PublicKey().Hash())
+	//if err != nil {
+	//	return err
+	//}
+	//request := iotexapi.GetAccountRequest{Address: from.String()}
+	//response, err := cli.GetAccount(context.Background(), &request)
+	//if err != nil {
+	//	return err
+	//}
+	//nonce := response.AccountMeta.PendingNonce
+
+	nonce := uint64(67)
 	gasprice := big.NewInt(0).SetUint64(s.cfg.Transfer.GasPrice)
 	fmt.Println(gasprice.String())
 	tx, err := action.NewTransfer(nonce, big.NewInt(100000000000),
