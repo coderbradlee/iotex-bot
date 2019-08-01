@@ -79,6 +79,7 @@ func (s *Transfer) startTransfer() error {
 		return err
 	}
 	// check if timeout
+	return nil
 }
 func (s *Transfer) transfer(pri crypto.PrivateKey) error {
 	conn, err := grpcutil.ConnectToEndpoint(s.cfg.API.Url, false)
