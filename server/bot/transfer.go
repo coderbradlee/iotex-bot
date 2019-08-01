@@ -10,6 +10,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/hex"
+	"fmt"
 	"math/big"
 
 	"go.uber.org/zap"
@@ -104,6 +105,7 @@ func (s *Transfer) transfer(pri crypto.PrivateKey) error {
 		return errors.New("failed to get nonce ")
 	}
 	gasprice := big.NewInt(0).SetUint64(s.cfg.Transfer.GasPrice)
+	fmt.Println(gasprice.String())
 	tx, err := action.NewTransfer(nonce, big.NewInt(0),
 		s.cfg.Transfer.To[0], []byte(""), s.cfg.Transfer.GasLimit, gasprice)
 	if err != nil {
