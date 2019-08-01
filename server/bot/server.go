@@ -10,8 +10,9 @@ import (
 	"context"
 	"time"
 
+	"github.com/iotexproject/iotex-core/pkg/log"
+
 	"github.com/lzxm160/iotex-bot/config"
-	"github.com/lzxm160/iotex-bot/pkg/log"
 )
 
 type Service interface {
