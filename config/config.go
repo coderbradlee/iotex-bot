@@ -68,8 +68,10 @@ type (
 		Wallet      string           `yaml:"wallet"`
 	}
 	transfer struct {
-		From []string `yaml:"from"`
-		To   []string `yaml:"to"`
+		From     []string `yaml:"from"`
+		To       []string `yaml:"to"`
+		GasLimit uint64   `yaml:"gaslimit"`
+		GasPrice uint64   `yaml:"gasprice"`
 	}
 )
 

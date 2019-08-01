@@ -103,14 +103,15 @@ func (s *Transfer) transfer(pri crypto.PrivateKey) error {
 	if err != nil {
 		return errors.New("failed to get nonce ")
 	}
+	gasprice := big.NewInt(0).SetUint64(s.cfg.Transfer.GasPrice)
 	tx, err := action.NewTransfer(nonce, big.NewInt(0),
-		s.cfg.Transfer.To[0], []byte(""), 1000000, big.NewInt(1000000000))
+		s.cfg.Transfer.To[0], []byte(""), s.cfg.Transfer.GasLimit, gasprice)
 	if err != nil {
 		return err
 	}
 	bd := &action.EnvelopeBuilder{}
-	elp := bd.SetGasLimit(uint64(1000000)).
-		SetGasPrice(big.NewInt(1000000000)).
+	elp := bd.SetGasLimit(s.cfg.Transfer.GasLimit).
+		SetGasPrice(gasprice).
 		SetAction(tx).Build()
 	p, err := keypair.HexStringToPrivateKey(pri.HexString())
 	if err != nil {
@@ -126,7 +127,7 @@ func (s *Transfer) transfer(pri crypto.PrivateKey) error {
 	}
 	shash := hash.Hash256b(byteutil.Must(proto.Marshal(selp.Proto())))
 	txhash := hex.EncodeToString(shash[:])
-	log.L().Info("transfer:", zap.String("transfer hash0", txhash))
+	log.L().Info("transfer:", zap.String("transfer hash", txhash))
 	return nil
 }
 func (s *Transfer) getPrivateKey() (crypto.PrivateKey, error) {
