@@ -101,7 +101,7 @@ func (s *Transfer) transfer(pri crypto.PrivateKey) error {
 
 	gasprice := big.NewInt(0).SetUint64(s.cfg.Transfer.GasPrice)
 	fmt.Println(gasprice.String())
-	tx, err := action.NewTransfer(nonce, big.NewInt(1000000000000000000),
+	tx, err := action.NewTransfer(nonce, big.NewInt(0),
 		s.cfg.Transfer.To[0], nil, s.cfg.Transfer.GasLimit, gasprice)
 	if err != nil {
 		return err
