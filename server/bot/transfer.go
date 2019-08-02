@@ -21,7 +21,7 @@ import (
 	"github.com/iotexproject/iotex-core/action"
 	"github.com/iotexproject/iotex-core/pkg/log"
 	"github.com/iotexproject/iotex-core/pkg/util/byteutil"
-	"github.com/iotexproject/iotex-core/protogen/iotexapi"
+	"github.com/iotexproject/iotex-proto/golang/iotexapi"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 
