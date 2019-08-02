@@ -23,6 +23,7 @@ import (
 
 	"github.com/lzxm160/iotex-bot/config"
 	"github.com/lzxm160/iotex-bot/pkg/log"
+	"github.com/lzxm160/iotex-bot/pkg/util/mailutil"
 	"github.com/lzxm160/iotex-bot/server/bot"
 )
 
@@ -52,6 +53,8 @@ func main() {
 		log.L().Fatal("new transfer:", zap.Error(err))
 	}
 	b.Register(transfer)
+	alert := &mailutil.Email{}
+	b.RegisterAlert(alert)
 	if err := b.Start(context.Background()); err != nil {
 		log.L().Fatal("Failed to start server.", zap.Error(err))
 	}

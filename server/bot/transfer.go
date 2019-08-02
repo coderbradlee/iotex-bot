@@ -11,6 +11,7 @@ import (
 	"context"
 	"encoding/hex"
 	"math/big"
+	"time"
 
 	"github.com/ethereum/go-ethereum/accounts/keystore"
 	"github.com/golang/protobuf/proto"
@@ -34,6 +35,7 @@ type Transfer struct {
 	ctx    context.Context
 	cancel context.CancelFunc
 	name   string
+	alert  Alert
 }
 
 // NewTransfer
@@ -47,6 +49,10 @@ func newTransfer(cfg config.Config, name string) (Service, error) {
 		name: name,
 	}
 	return &svr, nil
+}
+
+func (s *Transfer) Alert(a Alert) {
+	s.alert = a
 }
 
 // Start starts the server
@@ -72,41 +78,60 @@ func (s *Transfer) startTransfer() error {
 	if err != nil {
 		return err
 	}
-	err = s.transfer(pri)
+	hs, err := s.transfer(pri)
 	if err != nil {
 		return err
 	}
 	// check if timeout
+	s.checkAndAlert(hs)
 	return nil
 }
-func (s *Transfer) transfer(pri crypto.PrivateKey) error {
+func (s *Transfer) checkAndAlert(hs string) {
+	d := time.Duration(s.cfg.Transfer.AlertThreshold) * time.Second
+	t := time.NewTicker(d)
+	defer t.Stop()
+
+	select {
+	case <-t.C:
+		err := grpcutil.GetReceiptByActionHash(s.cfg.API.Url, false, hs)
+		if err != nil {
+			log.L().Error("transfer timeout:", zap.String("transfer hash", hs), zap.Error(err))
+			if s.alert != nil {
+				s.alert.Send("transfer timeout: " + hs + ":" + err.Error())
+			}
+		}
+		log.L().Info("transfer success:", zap.String("transfer hash", hs))
+	}
+}
+func (s *Transfer) transfer(pri crypto.PrivateKey) (txhash string, err error) {
 	conn, err := grpcutil.ConnectToEndpoint(s.cfg.API.Url, false)
 	if err != nil {
-		return err
+		return
 	}
 	defer conn.Close()
 	cli := iotexapi.NewAPIServiceClient(conn)
 
 	from, err := address.FromBytes(pri.PublicKey().Hash())
 	if err != nil {
-		return err
+		return
 	}
 	request := iotexapi.GetAccountRequest{Address: from.String()}
 	response, err := cli.GetAccount(context.Background(), &request)
 	if err != nil {
-		return err
+		return
 	}
 	nonce := response.AccountMeta.PendingNonce
 
 	gasprice := big.NewInt(0).SetUint64(s.cfg.Transfer.GasPrice)
 	amount, ok := big.NewInt(0).SetString(s.cfg.Transfer.AmountInRau, 10)
 	if !ok {
-		return errors.New("amount convert error")
+		err = errors.New("amount convert error")
+		return
 	}
 	tx, err := action.NewTransfer(nonce, amount,
 		s.cfg.Transfer.To[0], nil, s.cfg.Transfer.GasLimit, gasprice)
 	if err != nil {
-		return err
+		return
 	}
 	bd := &action.EnvelopeBuilder{}
 	elp := bd.SetNonce(nonce).
@@ -115,16 +140,16 @@ func (s *Transfer) transfer(pri crypto.PrivateKey) error {
 		SetAction(tx).Build()
 	selp, err := action.Sign(elp, pri)
 	if err != nil {
-		return err
+		return
 	}
 	req := &iotexapi.SendActionRequest{Action: selp.Proto()}
 	if _, err = cli.SendAction(context.Background(), req); err != nil {
-		return err
+		return
 	}
 	shash := hash.Hash256b(byteutil.Must(proto.Marshal(selp.Proto())))
-	txhash := hex.EncodeToString(shash[:])
+	txhash = hex.EncodeToString(shash[:])
 	log.L().Info("transfer:", zap.String("transfer hash", txhash), zap.Uint64("nonce", nonce), zap.String("from", s.cfg.Transfer.From[0]), zap.String("to", s.cfg.Transfer.To[0]))
-	return nil
+	return
 }
 func (s *Transfer) getPrivateKey() (crypto.PrivateKey, error) {
 	ks := keystore.NewKeyStore(s.cfg.Wallet,

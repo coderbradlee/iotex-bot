@@ -20,3 +20,4 @@ transfer:
   amountInRau: 0
   gaslimit: 10000
   gasprice: 1000000000000
+  alertThreshold: 10
