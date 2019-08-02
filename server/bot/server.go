@@ -10,9 +10,10 @@ import (
 	"context"
 	"time"
 
-	"github.com/iotexproject/iotex-core/pkg/log"
+	"go.uber.org/zap"
 
 	"github.com/lzxm160/iotex-bot/config"
+	"github.com/lzxm160/iotex-bot/pkg/log"
 )
 
 type Service interface {
@@ -84,6 +85,9 @@ func (s *Server) startTicker() error {
 }
 func (s *Server) runRegisterOnce() {
 	for _, service := range s.runServices {
-		service.Start(s.ctx)
+		err := service.Start(s.ctx)
+		if err != nil {
+			log.L().Error("err:", zap.String("service", service.Name()), zap.Error(err))
+		}
 	}
 }
