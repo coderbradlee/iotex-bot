@@ -12,7 +12,7 @@ log:
   stderrRedirectFile: s.log
   stdLogRedirect: true
 
-runInterval: 10
+runInterval: 20
 wallet: .
 transfer:
   from: ["io1vdtfpzkwpyngzvx7u2mauepnzja7kd5rryp0sg","xx"]
@@ -20,4 +20,4 @@ transfer:
   amountInRau: 0
   gaslimit: 10000
   gasprice: 1000000000000
-  alertThreshold: 10
+  alertThreshold: 15

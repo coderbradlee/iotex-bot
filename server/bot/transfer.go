@@ -99,6 +99,7 @@ func (s *Transfer) checkAndAlert(hs string) {
 			if s.alert != nil {
 				s.alert.Send("transfer timeout: " + hs + ":" + err.Error())
 			}
+			return
 		}
 		log.L().Info("transfer success:", zap.String("transfer hash", hs))
 	}
