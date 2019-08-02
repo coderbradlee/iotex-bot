@@ -5,7 +5,7 @@ go 1.12
 require (
 	github.com/ethereum/go-ethereum v1.8.27
 	github.com/iotexproject/iotex-address v0.2.0
-	github.com/iotexproject/iotex-core v0.7.1-0.20190527174610-e327ed2f35d8
+	github.com/iotexproject/iotex-core v0.8.0
 	github.com/pkg/errors v0.8.1
 	go.uber.org/automaxprocs v1.2.0
 	go.uber.org/config v1.3.1
