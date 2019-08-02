@@ -19,13 +19,13 @@ import (
 	"github.com/iotexproject/go-pkgs/hash"
 	"github.com/iotexproject/iotex-address/address"
 	"github.com/iotexproject/iotex-core/action"
-	"github.com/iotexproject/iotex-core/pkg/log"
 	"github.com/iotexproject/iotex-core/pkg/util/byteutil"
 	"github.com/iotexproject/iotex-proto/golang/iotexapi"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 
 	"github.com/lzxm160/iotex-bot/config"
+	"github.com/lzxm160/iotex-bot/pkg/log"
 	"github.com/lzxm160/iotex-bot/pkg/util/grpcutil"
 )
 
