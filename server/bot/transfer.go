@@ -10,7 +10,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/hex"
-	"fmt"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/accounts/keystore"
@@ -100,8 +99,11 @@ func (s *Transfer) transfer(pri crypto.PrivateKey) error {
 	nonce := response.AccountMeta.PendingNonce
 
 	gasprice := big.NewInt(0).SetUint64(s.cfg.Transfer.GasPrice)
-	fmt.Println(gasprice.String())
-	tx, err := action.NewTransfer(nonce, big.NewInt(0),
+	amount, ok := big.NewInt(0).SetString(s.cfg.Transfer.AmountInRau, 10)
+	if !ok {
+		return errors.New("amount convert error")
+	}
+	tx, err := action.NewTransfer(nonce, amount,
 		s.cfg.Transfer.To[0], nil, s.cfg.Transfer.GasLimit, gasprice)
 	if err != nil {
 		return err

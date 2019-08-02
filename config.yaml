@@ -17,5 +17,6 @@ wallet: .
 transfer:
   from: ["io1vdtfpzkwpyngzvx7u2mauepnzja7kd5rryp0sg","xx"]
   to: ["io1mflp9m6hcgm2qcghchsdqj3z3eccrnekx9p0ms","xx"]
+  amountInRau: 1000000000000000000
   gaslimit: 10000
   gasprice: 1000000000000
