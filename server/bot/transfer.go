@@ -107,7 +107,8 @@ func (s *Transfer) transfer(pri crypto.PrivateKey) error {
 		return err
 	}
 	bd := &action.EnvelopeBuilder{}
-	elp := bd.SetGasLimit(s.cfg.Transfer.GasLimit).
+	elp := bd.SetNonce(nonce).
+		SetGasLimit(s.cfg.Transfer.GasLimit).
 		SetGasPrice(gasprice).
 		SetAction(tx).Build()
 	selp, err := action.Sign(elp, pri)
