@@ -71,9 +71,3 @@ license:
 clean:
 	@echo "Cleaning..."
 	$(ECHO_V)rm -rf ./bin/$(BUILD_TARGET_SERVER)
-
-.PHONY: run
-run:
-	$(GOBUILD) -ldflags "$(PackageFlags)" -o ./$(BUILD_TARGET_SERVER) -v ./$(BUILD_SRC)
-	./$(BUILD_TARGET_SERVER)
-

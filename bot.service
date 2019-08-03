@@ -1,0 +1,15 @@
+[Unit]
+Description=iotex bot
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/root/iotex-bot/bot
+Environment="XDG_RUNTIME_DIR=/root/iotex-bot"
+WorkingDirectory=/root/iotex-bot
+PrivateTmp=true
+Restart=on-failure
+RestartSec=10
+User=root
+[Install]
+WantedBy=multi-user.target
