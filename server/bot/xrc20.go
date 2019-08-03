@@ -10,11 +10,15 @@ import (
 	"context"
 	"encoding/hex"
 	"math/big"
+	"strings"
 	"time"
+
+	"github.com/lzxm160/iotex-bot/pkg/util"
 
 	"github.com/golang/protobuf/proto"
 	"github.com/iotexproject/go-pkgs/crypto"
 	"github.com/iotexproject/go-pkgs/hash"
+	"github.com/iotexproject/iotex-address/address"
 	"github.com/iotexproject/iotex-core/action"
 	"github.com/iotexproject/iotex-core/pkg/util/byteutil"
 	"github.com/pkg/errors"
@@ -22,12 +26,19 @@ import (
 
 	"github.com/lzxm160/iotex-bot/config"
 	"github.com/lzxm160/iotex-bot/pkg/log"
-	"github.com/lzxm160/iotex-bot/pkg/util"
 	"github.com/lzxm160/iotex-bot/pkg/util/grpcutil"
 )
 
-// Transfer
-type Transfer struct {
+const (
+	//000000000000000000000000da7e12ef57c236a06117c5e0d04a228e7181cf36
+	paramsLen     = 64
+	addressLen    = 40
+	addressPrefix = "000000000000000000000000"
+	transferSha3  = "a9059cbb"
+)
+
+// Xrc20
+type Xrc20 struct {
 	cfg    config.Config
 	ctx    context.Context
 	cancel context.CancelFunc
@@ -36,42 +47,42 @@ type Transfer struct {
 }
 
 // NewTransfer
-func NewTransfer(cfg config.Config, name string) (Service, error) {
-	return newTransfer(cfg, name)
+func NewXrc20(cfg config.Config, name string) (Service, error) {
+	return newXrc20(cfg, name)
 }
 
-func newTransfer(cfg config.Config, name string) (Service, error) {
-	svr := Transfer{
+func newXrc20(cfg config.Config, name string) (Service, error) {
+	svr := Xrc20{
 		cfg:  cfg,
 		name: name,
 	}
 	return &svr, nil
 }
 
-func (s *Transfer) Alert(a Alert) {
+func (s *Xrc20) Alert(a Alert) {
 	s.alert = a
 }
 
 // Start starts the server
-func (s *Transfer) Start(ctx context.Context) error {
+func (s *Xrc20) Start(ctx context.Context) error {
 	s.ctx, s.cancel = context.WithCancel(ctx)
 	return s.startTransfer()
 }
 
 // Stop stops the server
-func (s *Transfer) Stop() error {
+func (s *Xrc20) Stop() error {
 	s.cancel()
 	return nil
 }
 
 // Name
-func (s *Transfer) Name() string {
+func (s *Xrc20) Name() string {
 	return s.name
 }
 
-func (s *Transfer) startTransfer() error {
+func (s *Xrc20) startTransfer() error {
 	// load keystore
-	pri, err := util.GetPrivateKey(s.cfg.Wallet, s.cfg.Transfer.From[0])
+	pri, err := util.GetPrivateKey(s.cfg.Wallet, s.cfg.Xrc20.From[0])
 	if err != nil {
 		return err
 	}
@@ -83,8 +94,8 @@ func (s *Transfer) startTransfer() error {
 	s.checkAndAlert(hs)
 	return nil
 }
-func (s *Transfer) checkAndAlert(hs string) {
-	d := time.Duration(s.cfg.Transfer.AlertThreshold) * time.Second
+func (s *Xrc20) checkAndAlert(hs string) {
+	d := time.Duration(s.cfg.Xrc20.AlertThreshold) * time.Second
 	t := time.NewTicker(d)
 	defer t.Stop()
 
@@ -101,26 +112,36 @@ func (s *Transfer) checkAndAlert(hs string) {
 		log.L().Info("transfer success:", zap.String("transfer hash", hs))
 	}
 }
-func (s *Transfer) transfer(pri crypto.PrivateKey) (txhash string, err error) {
+func (s *Xrc20) transfer(pri crypto.PrivateKey) (txhash string, err error) {
 	nonce, err := grpcutil.GetNonce(s.cfg.API.Url, false, s.cfg.Xrc20.From[0])
 	if err != nil {
 		return
 	}
-
-	gasprice := big.NewInt(0).SetUint64(s.cfg.Transfer.GasPrice)
-	amount, ok := big.NewInt(0).SetString(s.cfg.Transfer.AmountInRau, 10)
+	gasprice := big.NewInt(0).SetUint64(s.cfg.Xrc20.GasPrice)
+	amount, ok := big.NewInt(0).SetString(s.cfg.Xrc20.Amount, 10)
 	if !ok {
 		err = errors.New("amount convert error")
 		return
 	}
-	tx, err := action.NewTransfer(nonce, amount,
-		s.cfg.Transfer.To[0], nil, s.cfg.Transfer.GasLimit, gasprice)
+	amountHex := amount.Text(16)
+	amountParams := strings.Repeat("0", paramsLen-len(amountHex)) + amountHex
+	to, err := address.FromString(s.cfg.Xrc20.To[0])
+	if err != nil {
+		return
+	}
+	data := transferSha3 + addressPrefix + hex.EncodeToString(to.Bytes()) + amountParams
+	dataBytes, err := hex.DecodeString(data)
+	if err != nil {
+		return
+	}
+	tx, err := action.NewExecution(s.cfg.Xrc20.Contract, nonce, big.NewInt(0),
+		s.cfg.Xrc20.GasLimit, gasprice, dataBytes)
 	if err != nil {
 		return
 	}
 	bd := &action.EnvelopeBuilder{}
 	elp := bd.SetNonce(nonce).
-		SetGasLimit(s.cfg.Transfer.GasLimit).
+		SetGasLimit(s.cfg.Xrc20.GasLimit).
 		SetGasPrice(gasprice).
 		SetAction(tx).Build()
 	selp, err := action.Sign(elp, pri)
@@ -133,6 +154,6 @@ func (s *Transfer) transfer(pri crypto.PrivateKey) (txhash string, err error) {
 	}
 	shash := hash.Hash256b(byteutil.Must(proto.Marshal(selp.Proto())))
 	txhash = hex.EncodeToString(shash[:])
-	log.L().Info("transfer:", zap.String("transfer hash", txhash), zap.Uint64("nonce", nonce), zap.String("from", s.cfg.Transfer.From[0]), zap.String("to", s.cfg.Transfer.To[0]))
+	log.L().Info("xrc20 transfer:", zap.String("xrc20 transfer hash", txhash), zap.Uint64("nonce", nonce), zap.String("from", s.cfg.Xrc20.From[0]), zap.String("to", s.cfg.Xrc20.To[0]))
 	return
 }

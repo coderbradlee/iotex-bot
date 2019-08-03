@@ -66,11 +66,21 @@ type (
 		RunInterval uint64           `yaml:"runInterval"`
 		Transfer    transfer         `yaml:"transfer"`
 		Wallet      string           `yaml:"wallet"`
+		Xrc20       transfer         `yaml:"transfer"`
 	}
 	transfer struct {
 		From           []string `yaml:"from"`
 		To             []string `yaml:"to"`
 		AmountInRau    string   `yaml:"amountInRau"`
+		GasLimit       uint64   `yaml:"gaslimit"`
+		GasPrice       uint64   `yaml:"gasprice"`
+		AlertThreshold uint64   `yaml:"alertThreshold"`
+	}
+	xrc20 struct {
+		Contract       string   `yaml:"contract"`
+		From           []string `yaml:"from"`
+		To             []string `yaml:"to"`
+		Amount         string   `yaml:"amount"` // amount in smallest unit
 		GasLimit       uint64   `yaml:"gaslimit"`
 		GasPrice       uint64   `yaml:"gasprice"`
 		AlertThreshold uint64   `yaml:"alertThreshold"`

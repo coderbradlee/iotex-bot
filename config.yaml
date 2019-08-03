@@ -16,8 +16,16 @@ runInterval: 20
 wallet: .
 transfer:
   from: ["io1vdtfpzkwpyngzvx7u2mauepnzja7kd5rryp0sg","xx"]
-  to: ["io1mflp9m6hcgm2qcghchsdqj3z3eccrnekx9p0ms","xx"]
+  to: ["io1mflp9m6hcgm2qcghchsdqj3z3eccrnekx9p0ms",""]
   amountInRau: 0
-  gaslimit: 10000
+  gaslimit: 1000000
+  gasprice: 1000000000000
+  alertThreshold: 15
+xrc20:
+  contract: io1hhu3gwt5uankzl3zlp2cz8w0sl9uj336rq0334
+  from: ["io1vdtfpzkwpyngzvx7u2mauepnzja7kd5rryp0sg","xx"]
+  to: ["io1mflp9m6hcgm2qcghchsdqj3z3eccrnekx9p0ms",""]
+  amount: 10
+  gaslimit: 1000000
   gasprice: 1000000000000
   alertThreshold: 15

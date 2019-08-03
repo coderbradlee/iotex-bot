@@ -5,6 +5,8 @@ import (
 	"crypto/tls"
 	"errors"
 
+	"github.com/iotexproject/iotex-proto/golang/iotextypes"
+
 	"github.com/iotexproject/iotex-core/action"
 
 	"github.com/iotexproject/iotex-proto/golang/iotexapi"
@@ -40,4 +42,32 @@ func GetReceiptByActionHash(url string, secure bool, hash string) error {
 		return errors.New("action fail:" + hash)
 	}
 	return nil
+}
+func SendAction(url string, secure bool, action *iotextypes.Action) error {
+	conn, err := ConnectToEndpoint(url, secure)
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+	cli := iotexapi.NewAPIServiceClient(conn)
+	req := &iotexapi.SendActionRequest{Action: action}
+	if _, err = cli.SendAction(context.Background(), req); err != nil {
+		return err
+	}
+	return nil
+}
+func GetNonce(url string, secure bool, address string) (nonce uint64, err error) {
+	conn, err := ConnectToEndpoint(url, secure)
+	if err != nil {
+		return
+	}
+	defer conn.Close()
+	cli := iotexapi.NewAPIServiceClient(conn)
+	request := iotexapi.GetAccountRequest{Address: address}
+	response, err := cli.GetAccount(context.Background(), &request)
+	if err != nil {
+		return
+	}
+	nonce = response.AccountMeta.PendingNonce
+	return
 }

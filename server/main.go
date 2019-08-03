@@ -48,13 +48,24 @@ func main() {
 	if err != nil {
 		log.L().Fatal("new server:", zap.Error(err))
 	}
+
+	// transfer
 	transfer, err := bot.NewTransfer(cfg, "transfer")
 	if err != nil {
 		log.L().Fatal("new transfer:", zap.Error(err))
 	}
-	b.Register(transfer)
+
+	// xrc20
+	xrc20, err := bot.NewXrc20(cfg, "xrc20")
+	if err != nil {
+		log.L().Fatal("new transfer:", zap.Error(err))
+	}
+
 	alert := &mailutil.Email{}
+	b.Register(transfer)
+	b.Register(xrc20)
 	b.RegisterAlert(alert)
+
 	if err := b.Start(context.Background()); err != nil {
 		log.L().Fatal("Failed to start server.", zap.Error(err))
 	}
