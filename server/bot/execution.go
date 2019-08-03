@@ -116,7 +116,12 @@ func (s *Execution) exec(pri crypto.PrivateKey) (txhash string, err error) {
 	if err != nil {
 		return
 	}
-	tx, err := action.NewExecution(s.cfg.Execution.Contract, nonce, big.NewInt(0),
+	amount, ok := big.NewInt(0).SetString(s.cfg.Execution.Amount, 10)
+	if !ok {
+		err = errors.New("amount convert error")
+		return
+	}
+	tx, err := action.NewExecution(s.cfg.Execution.Contract, nonce, amount,
 		s.cfg.Execution.GasLimit, gasprice, dataBytes)
 	if err != nil {
 		return

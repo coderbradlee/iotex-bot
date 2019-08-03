@@ -77,6 +77,7 @@ type (
 	execution struct {
 		Contract       string   `yaml:"contract"`
 		From           []string `yaml:"from"`
+		Amount         string   `yaml:"amount"` // amount in smallest unit
 		GasLimit       uint64   `yaml:"gaslimit"`
 		GasPrice       uint64   `yaml:"gasprice"`
 		AlertThreshold uint64   `yaml:"alertThreshold"`
