@@ -31,7 +31,7 @@ xrc20:
   gasprice: 1000000000000
   alertThreshold: 20
 execution:
-  contract: io1zcl06rlrvjf8na8pfsxn8qnyd84c4knuaruxk4
+  contract: io1hxfy5pf0ykws7gk0mznt48jw5ejf47qqmje3dv
   from: ["io1vdtfpzkwpyngzvx7u2mauepnzja7kd5rryp0sg","xx"]
   gaslimit: 8000000
   gasprice: 1000000000000
