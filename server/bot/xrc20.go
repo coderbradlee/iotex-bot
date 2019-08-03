@@ -81,7 +81,7 @@ func (s *Xrc20) Name() string {
 }
 
 func (s *Xrc20) startTransfer() error {
-	if len(s.cfg.Transfer.From) != 2 {
+	if len(s.cfg.Xrc20.From) != 2 {
 		return errors.New("signer needs password")
 	}
 	// load keystore

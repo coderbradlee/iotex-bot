@@ -66,7 +66,7 @@ type (
 		RunInterval uint64           `yaml:"runInterval"`
 		Transfer    transfer         `yaml:"transfer"`
 		Wallet      string           `yaml:"wallet"`
-		Xrc20       transfer         `yaml:"transfer"`
+		Xrc20       xrc20            `yaml:"transfer"`
 	}
 	transfer struct {
 		From           []string `yaml:"from"`
