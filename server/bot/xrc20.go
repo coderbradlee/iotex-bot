@@ -81,8 +81,11 @@ func (s *Xrc20) Name() string {
 }
 
 func (s *Xrc20) startTransfer() error {
+	if len(s.cfg.Transfer.From) != 2 {
+		return errors.New("signer needs password")
+	}
 	// load keystore
-	pri, err := util.GetPrivateKey(s.cfg.Wallet, s.cfg.Xrc20.From[0])
+	pri, err := util.GetPrivateKey(s.cfg.Wallet, s.cfg.Xrc20.From[0], s.cfg.Xrc20.From[1])
 	if err != nil {
 		return err
 	}

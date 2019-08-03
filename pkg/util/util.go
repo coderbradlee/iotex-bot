@@ -15,7 +15,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func GetPrivateKey(walletPath, addr string) (crypto.PrivateKey, error) {
+func GetPrivateKey(walletPath, addr, password string) (crypto.PrivateKey, error) {
 	ks := keystore.NewKeyStore(walletPath,
 		keystore.StandardScryptN, keystore.StandardScryptP)
 
@@ -25,7 +25,7 @@ func GetPrivateKey(walletPath, addr string) (crypto.PrivateKey, error) {
 	}
 	for _, account := range ks.Accounts() {
 		if bytes.Equal(from.Bytes(), account.Address.Bytes()) {
-			return crypto.KeystoreToPrivateKey(account, s.cfg.Transfer.From[1])
+			return crypto.KeystoreToPrivateKey(account, password)
 		}
 	}
 	return nil, errors.New("src address not found")

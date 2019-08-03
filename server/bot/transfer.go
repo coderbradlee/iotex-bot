@@ -71,7 +71,10 @@ func (s *Transfer) Name() string {
 
 func (s *Transfer) startTransfer() error {
 	// load keystore
-	pri, err := util.GetPrivateKey(s.cfg.Wallet, s.cfg.Transfer.From[0])
+	if len(s.cfg.Transfer.From) != 2 {
+		return errors.New("signer needs password")
+	}
+	pri, err := util.GetPrivateKey(s.cfg.Wallet, s.cfg.Transfer.From[0], s.cfg.Transfer.From[1])
 	if err != nil {
 		return err
 	}
