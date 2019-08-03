@@ -61,9 +61,16 @@ func main() {
 		log.L().Fatal("new transfer:", zap.Error(err))
 	}
 
+	// multisend
+	multisend, err := bot.NewExecution(cfg, "multisend")
+	if err != nil {
+		log.L().Fatal("new multisend:", zap.Error(err))
+	}
+
 	alert := &mailutil.Email{}
 	b.Register(transfer)
 	b.Register(xrc20)
+	b.Register(multisend)
 	b.RegisterAlert(alert)
 
 	if err := b.Start(context.Background()); err != nil {

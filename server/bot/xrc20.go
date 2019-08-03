@@ -106,13 +106,13 @@ func (s *Xrc20) checkAndAlert(hs string) {
 	case <-t.C:
 		err := grpcutil.GetReceiptByActionHash(s.cfg.API.Url, false, hs)
 		if err != nil {
-			log.L().Error("transfer timeout:", zap.String("transfer hash", hs), zap.Error(err))
+			log.L().Error("xrc20 transfer timeout:", zap.String("xrc20 transfer hash", hs), zap.Error(err))
 			if s.alert != nil {
-				s.alert.Send("transfer timeout: " + hs + ":" + err.Error())
+				s.alert.Send("xrc20 transfer timeout: " + hs + ":" + err.Error())
 			}
 			return
 		}
-		log.L().Info("transfer success:", zap.String("transfer hash", hs))
+		log.L().Info("xrc20 transfer success:", zap.String("xrc20 transfer hash", hs))
 	}
 }
 func (s *Xrc20) transfer(pri crypto.PrivateKey) (txhash string, err error) {

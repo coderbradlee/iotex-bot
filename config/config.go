@@ -55,6 +55,7 @@ type (
 		Transfer    transfer         `yaml:"transfer"`
 		Wallet      string           `yaml:"wallet"`
 		Xrc20       xrc20            `yaml:"xrc20"`
+		Execution   execution        `yaml:"execution"`
 	}
 	transfer struct {
 		From           []string `yaml:"from"`
@@ -72,6 +73,14 @@ type (
 		GasLimit       uint64   `yaml:"gaslimit"`
 		GasPrice       uint64   `yaml:"gasprice"`
 		AlertThreshold uint64   `yaml:"alertThreshold"`
+	}
+	execution struct {
+		Contract       string   `yaml:"contract"`
+		From           []string `yaml:"from"`
+		GasLimit       uint64   `yaml:"gaslimit"`
+		GasPrice       uint64   `yaml:"gasprice"`
+		AlertThreshold uint64   `yaml:"alertThreshold"`
+		Data           string   `yaml:"data"`
 	}
 )
 
