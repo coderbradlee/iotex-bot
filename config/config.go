@@ -10,13 +10,12 @@ import (
 	"crypto"
 	"flag"
 	"os"
-	"strings"
 
 	"github.com/iotexproject/iotex-address/address"
-	"github.com/lzxm160/iotex-bot/pkg/log"
-
 	"github.com/pkg/errors"
 	uconfig "go.uber.org/config"
+
+	"github.com/lzxm160/iotex-bot/pkg/log"
 )
 
 func init() {
@@ -27,17 +26,6 @@ var (
 	// overwritePath is the path to the config file which overwrite default values
 	_overwritePath string
 )
-
-type strs []string
-
-func (ss *strs) String() string {
-	return strings.Join(*ss, ",")
-}
-
-func (ss *strs) Set(str string) error {
-	*ss = append(*ss, str)
-	return nil
-}
 
 var (
 	// Default is the default config
@@ -66,7 +54,7 @@ type (
 		RunInterval uint64           `yaml:"runInterval"`
 		Transfer    transfer         `yaml:"transfer"`
 		Wallet      string           `yaml:"wallet"`
-		Xrc20       xrc20            `yaml:"transfer"`
+		Xrc20       xrc20            `yaml:"xrc20"`
 	}
 	transfer struct {
 		From           []string `yaml:"from"`
