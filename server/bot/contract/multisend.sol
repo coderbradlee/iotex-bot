@@ -8,7 +8,7 @@ contract Multisend {
         require(recipients.length <= 300, "number of recipients is larger than 300");
         require(recipients.length == amounts.length, "parameters not match");
         uint totalAmount = 0;
-        for(uint256 i = 0; i < recipients.length; i++) {
+        for(uint i = 0; i < recipients.length; i++) {
             totalAmount+= amounts[i];
         }
         require(msg.value >= totalAmount, "not enough token");
